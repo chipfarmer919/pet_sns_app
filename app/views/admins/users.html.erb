@@ -1,0 +1,26 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-3">
+      <%= render partial: "sidebar" %>
+    </div>
+    <div class= "col-9">
+      <h3 class="d-flex align-items-center gap-2 fw-bold"><i class="fa fa-paw text-main"></i> オーナー</h3>
+      <table class="table table-striped mt-4">
+        <thead>
+          <tr>
+            <th>氏名</th>
+            <th>メールアドレス</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @users.each do |user| %>
+            <tr>
+              <td><%= user.name %></td>
+              <td><%= user.email %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

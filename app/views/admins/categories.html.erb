@@ -1,0 +1,30 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-3">
+      <%= render partial: "sidebar" %>
+    </div>
+    <div class="col-9">
+      <h3 class="d-flex align-items-center gap-2 fw-bold"><i class="fa fa-paw text-main"></i> ペットカテゴリー</h3>
+      <table class="table table-striped mt-4">
+        <thead>
+          <tr>
+            <th>カテゴリー名</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @categories.each do |category| %>
+            <tr>
+              <td><%= category.name %></td>
+              <td>
+                <a href="<%= category_path(category) %>" class="btn bg-light-cyan text-white">詳細</a>
+                <a href="<%= edit_category_path(category) %>" class="btn bg-main text-white ">編集</a>
+                <a href="<%= category_path(category) %>" data-confirm="Are you sure?" data-method="delete" class="btn btn-secondary">削除</a>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

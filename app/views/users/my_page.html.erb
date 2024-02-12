@@ -1,0 +1,242 @@
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-12 col-lg-3">
+      <%= render "shared/sidebar", current_page: 'my_page' %>
+    </div>
+    <div class="col-12 col-lg-9">
+      <h3 class="d-flex align-items-center gap-2 fw-bold"><i class="fa fa-paw text-light-main"></i> ペットプロフィール</h3>
+      <div class="mt-4 mb-5">
+        <div class="row d-flex justify-content-center align-items-center">
+          <div class="col-md-4">
+            <% if @pet and @pet.image.attached? %>
+              <img src="<%= url_for(@pet.image) %>" class="rounded w-100" style="aspect-ratio: 1.25">
+            <% else %>
+              <img src="<%= asset_path('profile.jpg') %>" class="w-100 mobject-fit rounded" style="aspect-ratio: 1.25" >
+            <% end %>
+          </div>
+        </div>
+        <div class="d-flex flex-column flex-grow-1 justify-content-center align-items-center flex-column mt-3">
+          <% if @pet %>
+            <div class="d-flex flex-column justify-content-end align-items-center">
+              <h4 class="mb-2"><%= @pet.name %></h4>
+              <div class="mb-2">
+                <% if @pet.gender=='オス' %>
+                  <i class="fa fa-mars fa-lg text-light-cyan"></i>
+                <% else %>
+                  <i class="fa fa-venus fa-lg text-normal-yellow"></i>
+                <% end %>
+                <span>年齢: <%= @pet.age %></span><span><%= @user.prefecture%></span>
+              </div>
+            </div>
+          <% end %>
+          <div class="d-flex justify-content-end align-items-center gap-3 mt-2 mb-4">
+            <%= link_to new_pet_path, class: "btn bg-light-cyan text-white px-4 py-2" do %>
+              <i class="fas fa-paw mr-2 text-white" style="transform: rotateZ(45deg);"></i><span> ペットを追加する</span>
+            <% end %>
+            <%= link_to 'Myペット一覧へ', my_pets_path, class: "btn bg-light-main text-white px-4 py-2" %>
+          </div>
+        </div>
+      </div>
+
+      <div class="visits mt-5">
+        <h3 class="d-flex align-items-center gap-2 fw-bold"><i class="fa fa-paw text-light-main"></i> 訪問ログ</h3>
+        <div class="mt-4">
+          <ul class="tabs-nav mtabs">
+            <li class="px-3 py-1 fw-bold text-main tab-active"><a href="#visited">足あと</a></li>
+            <li class="px-3 py-1 fw-bold text-main"><a href="#visits">自分の足あと</a></li>
+          </ul>
+          <div class="tabs-stage border rounded border-dark mt-4 mb-5">
+            <div id="visited" class="tabs-stage-element">
+              <div class="p-3 bg-white rounded-t border-bottom border-dark">
+                総アクセス数：<%= @visited.count %>
+              </div>
+              <div class="scrollable-div">
+                <% @visited.order(created_at: :desc).each do |visit| %>
+                  <% visitor = User.with_deleted.find(visit.visitor_id) %>
+                  <div class="d-flex justify-content-between align-items-center bg-light-grey p-3 border-bottom border-dark">
+                    <span>
+                    <%= image_tag display_pet_image(visitor), class: 'small-profile-image-rect' %>
+                    <%= link_to display_pet_or_username(visitor), visit_read_path(visit), class: "text-black" %>
+                    </span>
+                    <span>
+                    <%= visit.created_at.strftime('%m月%d日 %H:%M') %>
+                    </span>
+                  </div>
+                <% end %>
+              </div>
+              <div class="p-3 bg-white rounded-b border-top border-dark">
+                &nbsp;
+              </div>
+            </div>
+            <div id="visits" class="tabs-stage-element">
+              <div class="p-3 bg-white rounded-t border-bottom border-dark">
+                総アクセス数：<%= @visits.count %>
+              </div>
+              <div class="scrollable-div">
+                <% @visits.order(created_at: :desc).each do |visit| %>
+                  <% visitor = User.with_deleted.find(visit.visitor_id) %>
+                  <div class="d-flex justify-content-between align-items-center bg-light-grey p-3 border-bottom border-dark">
+                    <span>
+                    <%= image_tag display_pet_image(visitor), class: 'small-profile-image-rect' %>
+                    <%= link_to display_pet_or_username(visitor), "", class: "text-black" %>
+                    </span>
+                    <span>
+                    <%= visit.created_at.strftime('%m月%d日 %H:%M') %>
+                    </span>
+                  </div>
+                <% end %>
+              </div>
+              <div class="p-3 bg-white rounded-b border-top border-dark">
+                &nbsp;
+              </div>
+            </div>
+          </div>
+          <div class="d-flex justify-content-center align-items-center">
+            <%= link_to '一覧へ', visits_path, class: "btn bg-light-main text-white px-5 py-2" %>
+          </div>
+        </div>
+      </div>
+      <div class="notification mt-5">
+        <h3 class="d-flex align-items-center gap-2 fw-bold"><i class="fa fa-paw text-light-main"></i> 通知一覧</h3>
+        <div class="mt-4">
+          <ul class="tabs-nav mtabs">
+            <li class="px-3 py-1 fw-bold text-main tab-active"><a href="#community">コミュニティ</a></li>
+            <li class="px-3 py-1 fw-bold text-main"><a href="#message">メッセージ</a></li>
+            <li class="px-3 py-1 fw-bold text-main"><a href="#adminmessage">運営からのお知らせ</a></li>
+          </ul>
+          <div class="tabs-stage border rounded border-dark mt-4 mb-5">
+            <div id="community" class="tabs-stage-element">
+              <div class="p-3 bg-white rounded-t border-bottom border-dark">
+                総アクセス数：<%= @notifications.count %>
+              </div>
+              <div class="scrollable-div">
+                <% @notifications.order(created_at: :desc).each do |notification| %>
+                  <div class="d-flex justify-content-between align-items-center bg-light-grey p-3 border-bottom border-dark">
+                    <span>
+                    <%= image_tag display_pet_image(notification.recipient), class: 'small-profile-image-rect' %>
+                    <%= link_to notification.to_notification.message, notification_path(notification), class: "text-black" %>
+                    </span>
+                    <span>
+                    <%= notification.created_at.strftime('%m月%d日 %H:%M') %>
+                    </span>
+                  </div>
+                <% end %>
+              </div>
+              <div class="p-3 bg-white rounded-b border-top border-dark">
+                &nbsp;
+              </div>
+            </div>
+            <div id="message" class="tabs-stage-element">
+              <div class="p-3 bg-white rounded-t border-bottom border-dark">
+                総アクセス数：<%= @messages.count %>
+              </div>
+              <div class="scrollable-div">
+                <% @messages.order(created_at: :desc).each do |message| %>
+                  <div class="d-flex justify-content-between align-items-center bg-light-grey p-3 border-bottom border-dark">
+                    <span>
+                    <%= image_tag display_pet_image(message.sender), class: 'small-profile-image-rect' %>
+                    <% user = User.with_deleted.find_by(id: message.sender_id) %>
+                    <% if user && !user.deleted_at %>
+                      <%= link_to display_pet_or_username(user), message_path(message.sender), class: "text-black" %>
+                    <% else %>
+                      <%= link_to display_pet_or_username(user), mark_as_read_message_path(message), method: :patch, class: "text-black" %>
+                    <% end %>
+                    </span>
+                    <span>
+                    <%= message.created_at.strftime('%m月%d日 %H:%M') %>
+                    </span>
+                  </div>
+                <% end %>
+              </div>
+              <div class="p-3 bg-white rounded-b border-top border-dark">
+                &nbsp;
+              </div>
+            </div>
+            <div id="adminmessage" class="tabs-stage-element">
+              <div class="p-3 bg-white rounded-t border-bottom border-dark">
+                総アクセス数：<%= @adminmessages.count %>
+              </div>
+              <div class="scrollable-div">
+                <% @adminmessages.order(created_at: :desc).each do |adminmessage| %>
+                  <div class="d-flex justify-content-between align-items-center bg-light-grey p-3 border-bottom border-dark">
+                    <span>
+                    <%= image_tag display_pet_image(adminmessage.recipient), class: 'small-profile-image-rect' %>
+                    <%= link_to adminmessage.to_notification.message, notification_path(adminmessage), class: "text-black" %>
+                    </span>
+                    <span>
+                    <%= adminmessage.created_at.strftime('%m月%d日 %H:%M') %>
+                    </span>
+                  </div>
+                <% end %>
+              </div>
+              <div class="p-3 bg-white rounded-b border-top border-dark">
+                &nbsp;
+              </div>
+            </div>
+          </div>
+          <div class="d-flex justify-content-center align-items-center">
+            <%= link_to '一覧へ', notifications_path, class: "btn bg-light-main text-white px-5 py-2" %>
+          </div>
+        </div>
+      </div>
+      
+      <div class="community mt-5">
+        <h3 class="d-flex align-items-center gap-2 fw-bold mt-5"><i class="fa fa-paw text-light-main"></i> Myコミュニティ</h3>
+        <div class="mt-4">
+          <div class="p-4">
+            <div class="row row-cols-1 row-cols-lg-3">
+              <% @communities.each_with_index do |community, index| %>
+                <div class="px-2 mb-3 d-flex flex-column">
+                  <div class="d-flex flex-column justify-content-between flex-grow-1 rounded <%= current_user == community_owner(community) ? 'bg-light-yellow' : 'bg-light-grey' %> p-3">
+                    <% if community.image.attached? %>
+                      <img src="<%= url_for(community.image) %>" class="w-100 rounded" style="aspect-ratio: 125/100" alt="...">
+                    <% end %>
+                    <div class="card-body mt-3">
+                      <h5 class="card-title"><%= link_to community.title.truncate(10), community_path(community), class: "text-dark" %></h5>
+                      <p class="card-text wrap-text mt-3 d-flex justify-content-start align-items-center gap-2"><i class="fas fa-user"></i><%= community.members.count %> 人参加</p>
+                    </div>
+                    <% if current_user && current_user == @user %>
+                      <%= link_to '編集・管理', edit_community_path(community), class: "btn bg-white text-light-main border-light-main w-100 mt-3" %>
+                    <% end %>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+          <div class="d-flex justify-content-center align-items-center">
+            <%= link_to '一覧へ', my_communities_path, class: "btn bg-light-main text-white px-5 py-2" %>
+          </div>
+        </div>
+      </div>
+
+      <div class="event mt-5">
+        <h3 class="d-flex align-items-center gap-2 fw-bold mt-5"><i class="fa fa-paw text-light-main"></i> Myイベント</h3>
+        <div class="mt-4">
+          <div class="p-4">
+            <div class="row row-cols-1 row-cols-lg-3">
+              <% @events.each_with_index do |event, index| %>
+                <div class="px-2 mb-3 d-flex flex-column">
+                  <div class="d-flex flex-column justify-content-between flex-grow-1 rounded <%= index % 3 == 1 ? 'bg-light-grey fw-bold' : 'bg-light-yellow' %> p-3">
+                    <div class="card m-4">
+                      <% if event.image.attached? %>
+                        <img src="<%= url_for(event.image) %>" class="card-img-top" alt="...">
+                      <% end %>
+                      <div class="card-body">
+                        <%= link_to event.title.truncate(10), community_event_path(event.community, event) %>
+                        <p class="card-text wrap-text"><%= event.details.truncate(100) %></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+          <div class="d-flex justify-content-center align-items-center">
+            <%= link_to '一覧へ', my_events_path, class: "btn bg-light-main text-white px-5 py-2" %>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

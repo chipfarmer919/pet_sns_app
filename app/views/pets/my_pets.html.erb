@@ -1,0 +1,59 @@
+<div class="container my-5">
+  <div class="row">
+    <div class="col-lg-3">
+      <%= render "shared/sidebar", current_page: 'pets'%>
+    </div>
+    <div class="col-lg-9">
+      <div class="d-flex justify-content-between align-items-center">
+        <h3 class="d-flex align-items-center gap-2 fw-bold justify-content-center"><i class="fa fa-paw text-light-main"></i> Myペット一覧</h3>
+      </div>
+      <div class="px-4 py-3 bg-light-yellow d-flex justify-content-center align-items-center gap-2 mt-5">
+        <span>登録済み　ペット飼育数：<%= @pets.count %></span>
+      </div>
+      <div class="mt-3">
+        <div class="row ml-0 mr-0">
+          <% @pets.each do |pet| %>
+            <div class="mb-3 pet-box py-4 mt-4">
+              <div class="d-flex justify-content-between align-items-center">
+                <h4 class="d-flex align-items-center gap-2 fw-bold justify-content-center"><i class="fa fa-paw text-light-main"></i><span><%= pet.name %></span><span> ペットプロフィール</span></h4>
+              </div>
+              <div class="row d-flex justify-content-center align-items-center mt-3">
+                <% if pet.image.attached? %>
+                  <div class="col-md-4">
+                    <img src="<%= url_for(pet.image) %>" class="rounded w-100" style="aspect-ratio: 1.25">
+                  </div>
+                <% end %>
+              </div>
+              <div class="d-flex flex-column flex-grow-1 justify-content-center align-items-center flex-column mt-3">
+                <div class="d-flex flex-column justify-content-end align-items-center">
+                  <h4 class="mb-2"><%= pet.name %></h4>
+                  <div class="mb-2 d-flex justify-content-center align-items-center gap-2">
+                    <% if pet.gender=='オス' %>
+                      <i class="fa fa-mars fa-lg text-light-cyan"></i>
+                    <% else %>
+                      <i class="fa fa-venus fa-lg text-normal-yellow"></i>
+                    <% end %>
+                    <span>年齢: <%= pet.age %></span><span><%= current_user.prefecture %></span>
+                  </div>
+                </div>
+                <div class="d-flex justify-content-end align-items-center gap-3 mt-2 mb-4">
+                  <%= link_to '編集する', edit_pet_path(pet), class:"btn bg-light-main text-white fw-bold px-5 py-2" %>
+                  <% if pet.profile_display %>
+                    <span class="btn border-light-main bg-white text-light-main fw-bold py-2">プロフィールに表示中</span>
+                  <% else %>
+                    <%= link_to 'プロフィールに表示する', set_profile_display_pet_path(pet), method: :post, class: "btn bg-normal-yellow text-white fw-bold py-2" %>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+        <div class="d-flex justify-content-center align-items-center mt-4">
+          <%= link_to new_pet_path, class: "btn bg-light-cyan text-white px-4 py-2" do %>
+            <i class="fas fa-paw mr-2 text-white" style="transform: rotateZ(45deg);"></i><span> ペットを追加する</span>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

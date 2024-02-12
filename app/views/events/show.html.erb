@@ -1,0 +1,117 @@
+<div class="container my-5">
+  <h4 class="d-flex align-items-center justify-content-center gap-2 fw-bold"><i class="fa fa-paw text-light-main"></i> イベント詳細</h4>
+  <div class="mx-auto d-block position-relative mt-4" width="90%">
+    <% if @community.image.attached? %>
+      <img src="<%= url_for(@community.image) %>" class="mx-auto d-block mobject-fit w-100" style="height: 350px">
+    <% else %>
+      <img src="https://placehold.co/600x400/png" class="mx-auto d-block mobject-fit w-100" style="height: 350px">
+    <% end %>
+    <% if current_user == community_owner(@community) %>
+      <%= link_to '変更', edit_community_image_path(@community), class: "btn border-main text-main fw-bold", style: "position: absolute; top: 10px; right: 10px;" %>
+    <% end %>
+  </div>
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-12 col-lg-3">
+        <div class="bg-light-grey px-3 py-4 rounded">
+          <% if @event.image.attached? %>
+            <img src="<%= url_for(@event.image) %>" class="rounded w-100 mobject-fit">
+          <% end %>
+          <div class="card-body pl-0">
+            <p class="card-text"><%= @event.title %></p>
+            <%# <button type="button" class="btn btn-outline-warning">Warning</button> %>
+            <p class="card-text mt-3"><span class="fw-bold text-main">日時:</span> <%= @event.event_date.strftime('%Y-%m-%d') %></p>
+            <p class="card-text"><span class="text-main fw-bold">場所:</span> <%= @event.event_place %></p>
+            <div class="d-grid gap-2">
+              <% if current_user == @event.user %>
+                <%= link_to '削除', community_event_path(@community, @event), method: :delete, data: { confirm: 'Are you sure?' }, class:"btn bg-main fw-bold text-white" %>
+                <%= link_to '編集', edit_community_event_path(@community, @event), class:"btn text-white fw-bold bg-light-cyan" %>
+              <% elsif current_user && community_member(@community) %>
+                <% if current_user %>
+                  <%= link_to '退出する', community_event_unlike_path(@community, @event), method: :delete, id: "event-unlike-#{@event.id}", class: 'btn bg-main fw-bold text-white', style: "display: #{current_user.likes?(@event) ? 'block' : 'none'}", remote: true %>
+                  <%= link_to '参加する', community_event_like_path(@community, @event), method: :post, id: "event-like-#{@event.id}", class: 'btn bg-light-cyan fw-bold text-white', style: "display: #{current_user.likes?(@event) ? 'none' : 'block'}", remote: true %>
+                <% end %>
+              <% end %>
+              <% if current_user && current_user.favorites?(@event) %>
+                <%= link_to 'お気にいり取り消し', community_event_unfavorite_path(@community, @event), method: :delete, class: 'btn bg-main fw-bold text-white' %>
+              <% else %>
+                <%= link_to 'お気にいり', community_event_favorite_path(@community, @event), method: :post, class: 'btn border-main fw-bold text-main' %>
+              <% end %>
+            </div>
+            <p class="card-text mt-3 fw-bold text-main">主催者</p>
+            <div class="d-flex align-items-center gap-4">
+              <% if display_pet_image(@user) %>
+                <img src="<%= display_pet_image(@user) %>" class="rounded-circle pic" alt="..." width="50">
+              <% end %>
+              <span class="">
+                <% if @user && !@user.deleted_at %>
+                  <%= link_to display_pet_or_username(@user), user_path(@user), class: 'text-dark' %>
+                <% else %>
+                  <%= display_pet_or_username(@user) %>
+                <% end %>
+              </span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mt-4">
+              <span class="fw-bold text-main">参加者</span>
+              <span class=""><%= @event.likes.count %></span>
+            </div>
+            <div class="mt-5">
+              <% @event.joining_users.limit(8).each do |member| %>
+                <img src="<%= display_pet_image(member) %>" class="rounded-circle " alt="..." style="width: 50px; height: 50px" >
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-lg-9">
+        <div class="container ">
+          <div class="border border-dark rounded">
+            <div class="text-black px-4 py-2 bg-light-grey border-bottom border-dark rounded-t">
+              <p class="mb-0">イベント詳細</p>
+            </div>
+            <div class="p-4">
+              <span>日時: <%= @event.event_date.strftime('%Y-%m-%d') %></span><br>
+              <span>場所: <%= @event.event_place%></span><br>
+              <span>定員: <%= @event.people_limit %></span><br>
+              <p class="mt-4"><%= simple_format(@event.details) %></p>
+            </div>
+          </div>
+        </div>
+        <div class="container  mt-5">
+          <div class="row">
+            <div class="text-black">
+              <p class="mb-0">コメント (<%= @event.comments.count%>)</p>
+            </div>
+            <div class="col-12 mt-4 p-0">
+              <% @comments.each_with_index do |comment, index| %>
+                <%= render partial: 'comments/comment', locals: { comment: comment, community: @community, comment_index: index + 1 + (((params[:page] || 1).to_i - 1) * 10) } %>
+              <% end %>
+              <% if community_member(@community) || current_user ==community_owner(@community) %>
+                <div class="card bg-body-secondary">
+                  <div class="card-body">
+                    <% if current_user %>
+                      <%= form_for [@community, @event, @event.comments.build] do |f| %>
+                        <div class="d-flex">
+                          <% if current_user.pets.first && current_user.pets.first.image.attached? %>
+                            <img src="<%= display_pet_image(current_user) %>" class="rounded-circle" style="width: 50px; height: 50px;" alt="...">
+                          <% end %>
+                          <div class="ml-2" style="position: relative; flex: 1;">
+                            <%= f.text_area :content, class: "form-control", rows: 4, placeholder: "コメントを入力してください" %>
+                            <button type="submit" class="btn btn-small rounded-2 bg-main text-white fw-bold d-flex gap-1 align-items-center" style="position: absolute; bottom: 5px; right: 5px;">
+                              <i class="fas fa-arrow-right"></i>
+                            </button>
+                          </div>
+                        </div>
+                      <% end %>
+                    <% end %>
+                  </div>
+                </div>
+              <% end %>
+              <%= will_paginate @comments %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

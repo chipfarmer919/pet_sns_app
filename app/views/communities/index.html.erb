@@ -1,0 +1,107 @@
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-12 col-lg-3">
+      <%= render "shared/sidebar", current_page: 'communities' %>
+    </div>
+    <div class="col-12 col-lg-9 communities">
+      <h3 class="d-flex align-items-center gap-2 fw-bold"><i class="fa fa-paw text-light-main"></i> コミュニティ一覧</h3>
+      <ul class="mt-4 d-flex mtabs" id="myTab" role="tablist">
+        <li class="mtab fw-bold" role="presentation">
+          <%= link_to 'すべて', all_content_path, class: "nav-link text-normal-grey", id: "pots-tab", 'aria-controls': "posts", 'aria-selected': "false" %>
+        </li>
+        <li class="mtab active fw-bold" role="presentation">
+          <a class="nav-link active text-main" id="communities-tab" data-bs-toggle="tab" href="#communities" role="tab" aria-controls="communities" aria-selected="false">コミュニティ</a>
+        </li>
+        <li class="mtab fw-bold" role="presentation">
+          <%= link_to 'トピック', all_posts_path, class: "nav-link text-normal-grey", id: "pots-tab", 'aria-controls': "posts", 'aria-selected': "false" %>
+        </li>
+        <li class="mtab fw-bold" role="presentation">
+          <%= link_to 'イベント', all_events_path, class: "nav-link text-normal-grey", id: "events-tab", 'aria-controls': "events", 'aria-selected': "false" %>
+        </li>
+      </ul>
+      <div class="tab-pane fade show active" id="communities" role="tabpanel" aria-labelledby="communities-tab">
+        <div class="">
+          <%= form_tag(communities_path, method: :get) do %>
+            <div class="d-flex justify-content-start align-items-center flex-md-row justify-content-md-between mt-4">
+              <div class="input-group border border-dark rounded" style="max-width: 200px">
+                <%= text_field_tag :query, params[:query], class: "form-control", placeholder: "検索する" %>
+                <div class="input-group-btn fw-bold">
+                  <button class="btn bg-transparent fw-bold" type="submit">
+                    <i class="fa fa-search"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="overlay">
+                <button type="button" class="btn bg-transparent border border-dark" id="filterButton">検索条件変更</button>
+                <div id="filterBox" class="border rounded end-0 mt-2 p-3 shadow" style="display: none; width: 300px">
+                  <label class="d-flex gap-2 align-items-center mb-2">
+                    <input type="checkbox" class="form-control-check">
+                    タイトルのみで検索
+                  </label>
+                  <div class="form-group d-flex gap-2 mb-2">
+                    <label for="categorySelect" style="width: 40%;">並び替え</label>
+                    <%= select_tag(:category, options_for_select([["カテゴリーを選択してください", ""], *Category.all.map { |c| [c.name, c.id] }], params[:category]), class: "form-select", id: "categorySelect") %>
+                  </div>
+                  <div class="form-group d-flex gap-2">
+                    <label for="orderBySelect" style="width: 40%;">カテゴリ</label>
+                    <%= select_tag(:order_by, options_for_select([["並び替え", ""], ["更新日", "updated_date"],["参加人数", "participants"]], params[:order_by]), class: "form-select", id: "orderBySelect") %>
+                  </div>
+                  <div class="mt-3">
+                    <%= button_tag(type: :submit, class: "btn text-white fw-bold w-100 bg-main") do %>
+                      適用する
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+              <%= link_to "+作成する", new_community_path, class: "btn text-white bg-main" %>
+            </div>
+          <% end %>
+          <div class="mt-4">
+            <p>コミュニティの検索結果：<%= @communities.size %>件</p>
+          </div>
+          <div class="mt-4">
+            <% @communities.each do |community| %>
+              <div class="rounded mb-4 border border-dark" style="overflow: hidden">
+                <div class="bg-light-grey px-3 py-2 d-flex justify-content-between align-items-center border-bottom border-dark rounded-t">
+                  <span class="fw-bold text-decoration-underline"><%= link_to community.title, community_path(community), class: 'fw-bold text-decoration-underline text-dark' %></span>
+                  <% if current_user == community_owner(community) %>
+                    <a href="<%= edit_community_path(community) %>" class="btn rounded-0 text-white fw-bold bg-main">編集・管理</a>
+                  <% else %>
+                    <% if !community_member(community) %>
+                      <% membership = community.memberships.new %>
+                      <%= form_with(model: [community, membership]) do |form| %>
+                        <%= form.submit "+参加する", class: 'btn btn-small rounded-0 bg-main text-white fw-bold d-flex gap-1 align-items-center' %>
+                      <% end %>
+                    <% end %>
+                  <% end %>
+                </div>
+                <div class="p-3">
+                  <div class="d-flex gap-3">
+                    <% if community.image.attached? %>
+                      <div class="bg-light-grey d-flex justify-content-center align-items-center flex-shrink-0" style="width: 120px; height: 120px; aspect-ratio: 1/1">
+                        <img src="<%= url_for(community.image) %>" class="w-100 h-100 mobject-fit" alt="...">
+                      </div>
+                    <% end %>
+                    <p><%= community.description.truncate(100) %></p>
+                    <div class="mt-2">
+                      <div class="d-flex align-items-center gap-3">
+                        <div class="d-flex align-items-center gap-2">
+                          <span class="text-white bg-main d-flex justify-content-center align-items-center rounded" style="width: 25px; height: 25px; aspect-ratio: 1/1">UP</span>
+                          <span>12分前</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                          <i class="fa fa-user text-light-main"></i>
+                          <span><%= community.members.count %>人が参加中</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

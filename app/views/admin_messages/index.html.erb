@@ -1,0 +1,25 @@
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-3">
+            <%= render "shared/sidebar", current_page: 'admin_message'%>
+        </div>
+        <div class="col-lg-9">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2 class="d-flex align-items-center gap-2 fw-bold justify-content-center"><i class="fa fa-paw text-light-main"></i> 運営からのメッセージ</h2>
+            </div>
+            <div class="border rounded border-dark mt-4 mb-5">
+                <div class="container p-3 scrollable-div">
+                    <table>
+                    <% @admin_messages.order(created_at: :desc).each do |admin_message| %>
+                    <tr>
+                    <td><%= admin_message.created_at.strftime('%Y年%m月%d日') %></td>
+                    <td><%= admin_message.content %></td>
+                    </tr>
+                    <% end %>
+                    </table>
+                </div>
+                <%= will_paginate @admin_messages, previous_label: '前へ', next_label: '次へ' %>
+            </div>
+        </div>
+    </div>
+</div>

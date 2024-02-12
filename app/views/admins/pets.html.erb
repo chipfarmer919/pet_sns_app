@@ -1,0 +1,32 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-3">
+      <%= render partial: "sidebar" %>
+    </div>
+    <div class= "col-9">
+      <h3 class="d-flex align-items-center gap-2 fw-bold"><i class="fa fa-paw text-main"></i> ペット</h3>
+      <table class="table table-striped mt-4">
+        <thead>
+          <tr>
+            <th>ペット</th>
+            <th>オーナー</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @pets.each do |pet| %>
+            <tr>
+              <td><%= pet.name %></td>
+              <td><%= pet.user ? pet.user.name : "退会したユーザー" %></td>
+              <td>
+                <a href="<%= pet_path(pet) %>" class="btn bg-light-cyan text-white">詳細</a>
+                <a href="<%= edit_pet_path(pet) %>" class="btn bg-main text-white ">編集</a>
+                <a href="<%= pet_path(pet) %>" data-confirm="Are you sure?" data-method="delete" class="btn btn-secondary">削除</a>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

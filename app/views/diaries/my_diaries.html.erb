@@ -1,0 +1,37 @@
+<div class="my-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-3">
+        <%= render "shared/sidebar", current_page: 'diary' %>
+      </div>
+      <div class="col-lg-9">
+        <div class="d-flex justify-content-between align-items-center">
+          <h4 class="d-flex align-items-center gap-2 fw-bold mb-4"><i class="fa fa-paw text-light-main"></i> 日記</h4>
+          <%= link_to "作成", new_user_diary_path(current_user), class:"btn bg-main text-white fw-bold px-4"  %>
+        </div>
+        <% @diaries.each do |diary| %>
+          <div class="border rounded border-dark mb-3">
+            <div class="border-bottom border-dark px-4 py-2 bg-light-grey rounded-t">
+              <h5 class="fw-bold mb-0"><%= diary.title %></h5>
+            </div>
+            <div class="p-4">
+              <% if diary.image.attached? %>
+                <div class="w-25 aspect-1">
+                  <img src="<%= url_for(diary.image) %>" class="mobject-fit h-100 w-100">
+                </div>
+              <% end %>
+              <div class="">
+                <div class="">
+                  <p class="card-text"><%= diary.content %></p>
+                  <div class="text-end">
+                    <%= link_to '詳細', user_diary_path(current_user, diary), class:"btn bg-main text-white fw-bold px-3" %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

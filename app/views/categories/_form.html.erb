@@ -1,0 +1,22 @@
+<div class="container mt-4" style="max-width: 500px;">
+  <h3 class="d-flex align-items-center gap-2 fw-bold mb-4"><i class="fa fa-paw text-main"></i> カテゴリ情報</h3>
+  <%= form_with(model: category) do |form| %>
+    <% if category.errors.any? %>
+      <div id="error_explanation">
+        <h2><%= pluralize(category.errors.count, "error") %> prohibited this category from being saved:</h2>
+        <ul>
+          <% category.errors.each do |error| %>
+            <li><%= error.full_message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+    <div class="field mb-3">
+      <%= form.label :名前, class:"form-label" %>
+      <%= form.text_field :name, class:"form-control" %>
+    </div>
+    <div class="actions mb-3 text-center">
+      <%= form.submit "保存", class: "btn bg-main text-white fw-bold px-5" %>
+    </div>
+  <% end %>
+</div>

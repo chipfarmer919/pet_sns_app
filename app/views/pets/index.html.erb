@@ -1,0 +1,81 @@
+<div class="container my-5" style="max-width: 767px">
+  <h2 class="d-flex align-items-center gap-2 fw-bold justify-content-center"><i class="fa fa-paw text-main"></i> ペット検索</h2>
+  <div class="mt-5">
+    <div>
+      <%= form_tag(pets_path, method: :get, class: "form-inline") do %>
+        <div class="mb-3">
+          <div class="px-4 py-2 bg-light-yellow d-flex justify-content-start align-items-center gap-2">
+            <button class="btn btn-sm bg-main text-white fw-bold">必須</button>
+            <span>キーワード <small>(全角15文字以内)</small></span>
+          </div>
+          <div class="mt-3 px-4">
+            <%= text_field_tag :search, params[:search], placeholder: "ペットを探す", class: "form-control" %>
+          </div>
+        </div>
+        <div class="mb-3">
+          <div class="px-4 py-2 bg-light-yellow d-flex justify-content-start align-items-center gap-2">
+            <button class="btn btn-sm bg-main text-white fw-bold">必須</button>
+            <span>カテゴリー</span>
+          </div>
+          <div class="mt-3 px-4">
+            <%= select_tag :category, options_for_select(Category.all.map { |c| [c.name, c.id] }, params[:category]), include_blank: true, class: "form-control", id: "category-select3" %>
+          </div>
+        </div>
+        <div class="mb-3">
+          <div class="px-4 py-2 bg-light-yellow d-flex justify-content-start align-items-center gap-2">
+            <button class="btn btn-sm bg-main text-white fw-bold">必須</button>
+            <span>サブカテゴリー</span>
+          </div>
+          <div class="mt-3 px-4">
+            <% if params[:category].present? %>
+              <% category = Category.find(params[:category]) if params[:category].present? %>
+              <%= select_tag :subcategory, options_for_select(category&.subcategories&.map { |c| [c.name, c.id] } || [], params[:subcategory]), include_blank: true, class: "form-control", id: "subcategory-select3" %>
+            <% else %>
+              <%= select_tag :subcategory, options_for_select([], params[:subcategory]), include_blank: true, class: "form-control", id: "subcategory-select3" %>
+            <% end %>
+          </div>
+        </div>
+        <div class="mb-3">
+          <div class="px-4 py-2 bg-light-yellow d-flex justify-content-start align-items-center gap-2">
+            <button class="btn btn-sm bg-main text-white fw-bold">必須</button>
+            <span>都道府県</span>
+          </div>
+          <div class="mt-3 px-4">
+            <%= select_tag :prefecture, options_for_select(prefectures_with_cities.keys, params[:prefecture]), prompt: "都道府県を選んでください", class: "form-control", id: "prefecture-select" %>
+          </div>
+        </div>
+        <div class="mb-3">
+          <div class="px-4 py-2 bg-light-yellow d-flex justify-content-start align-items-center gap-2">
+            <button class="btn btn-sm bg-main text-white fw-bold">必須</button>
+            <span>市町村</span>
+          </div>
+          <div class="mt-3 px-4">
+            <%= select_tag :city, options_for_select([], params[:city]), prompt: "市町村を選んでください", class: "form-control", id: "city-select" %>
+          </div>
+        </div>
+        <div class="text-center mt-5">
+          <%= submit_tag "検索", class: "btn text-white fw-bold px-4 bg-main btn-lg" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+<div class="container my-5">
+  <% @pets.each do |pet| %>
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <% if pet.image.attached? %>
+          <div class="w-100">
+            <img src="<%= url_for(pet.image) %>" class="w-100 rounded" style="aspect-ratio: 1.25">
+          </div>
+        <% end %>
+      </div>
+      <div class="col-md-8">
+        <h5 class="mb-3"><%= pet.name %></h5>
+        <p class="card-text">年齢: <%= pet.age %></p>
+        <p class="card-text">性別: <%= pet.gender %></p>
+        <%= link_to '詳細', pet, class:"btn text-white fw-bold bg-main" %>
+      </div>
+    </div>
+  <% end %>
+</div>

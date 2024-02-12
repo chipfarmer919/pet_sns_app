@@ -1,0 +1,95 @@
+<div class="container my-5" style="max-width: 767px">
+  <h3 class="d-flex align-items-center gap-2 fw-bold justify-content-center"><i class="fa fa-paw text-light-main"></i> Q&Aの詳細</h3>
+  <div class="justify-content-center mt-4">
+    <div class="mb-4 px-3 pb-2">
+      <div class="row">
+        <div class="col-md-2 photo-round d-flex justify-content-start align-items-center">
+          <img src="<%= display_pet_image(@question.user) %>" class="w-100 rounded" style="aspect-ratio: 125/100 !important">
+        </div>
+        <div class="col-md-10 d-flex flex-column justify-content-evenly align-items-start">
+          <span class="fw-bold"><%= @question.user.name %> さん</span>
+          <span><%= @question.user.created_at.strftime('%Y年%m月%d日') %></span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="py-4">
+          <label class="fw-bold text-light-cyan"><%= link_to truncate(@question.body, length: 90), question_path(@question), class: 'text-dark text-decoration-none' %></label>
+        </div>
+        <div class="d-flex gap-2 mb-4">
+          <span class="border border-light-main round px-2 py-1 rounded text-light-main text-sm"><%= @question.category.name %></span>
+          <span class="border border-light-main round px-2 py-1 rounded text-light-main text-sm"><%= @question.subcategory.name %></span>
+          <span class="border border-light-main round px-2 py-1 rounded text-light-main text-sm"><%= @question.special_category %></span>
+        </div>
+      </div>
+    </div>
+    <% if current_user != question_author(@question) && @question.status != "解決済み" %>
+      <div class="mt-3">
+        <%= form_with(model: [@question, Answer.new]) do |form| %>
+          <div class="form-group mb-3">
+            <%= form.text_area :body, class: "form-control", rows: 5 %>
+          </div>
+          <div class="text-center mt-4">
+            <%= form.submit "回答する", class: "btn bg-light-main text-white fw-bold px-4" %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+    <% @answers.each_with_index do |answer, index| %>
+      <div class="col-md-12 mt-3">
+        <div class="">
+          <% user = User.with_deleted.find_by(id: answer.user_id) %>
+          <div class="p-4 <%= index % 2 == 0 ? "bg-light-yellow border-light-yellow" : "bg-light-grey border-light-grey" %> rounded">
+            <div class="d-flex justify-content-start align-items-center">
+              <% if user && !user.deleted_at %>
+                <h5 class="card-title text-light-main mb-0"><%= display_pet_or_username(user) %>の回答</h5>
+              <% else %>
+                <h5 class="card-title text-light-main mb-0"><%= display_pet_or_username(user) %>の回答</h5>
+              <% end %>
+              <% if answer.picked? %>
+                <span class="text-sm bg-normal-yellow text-white photo-round px-3 py-1 mx-4"><i class="fas fa-crown"></i> ベストアンサー</span>
+              <% end %>
+            </div>
+            <div id="answer-text-<%= answer.id %>" style="display: none;">
+              <p class="card-text"><%= answer.body %></p>
+              <% if current_user == answer.user && !answer.picked? && @question.status != "解決済み" %>
+                <button class="btn border-main text-main fw-bold" data-answer-id="<%= answer.id %>">編集</button>
+              <% end %>
+            </div>
+            <div id="answer-edit-<%= answer.id %>" style="display: none;">
+              <%= form_with(model: [ @question, answer ], method: :patch, remote: true) do |form| %>
+                <%= form.text_area :body, class: "form-control border-dark", rows: 4 %>
+                <div class="d-flex justify-content-end align-items-center gap-2">
+                  <%= form.submit "保存", class: "btn bg-main text-white fw-bold" %>
+                  <button class="btn bg-light-grey" data-answer-id="<%= answer.id %>">キャンセル</button>
+                </div>
+              <% end %>
+            </div>
+            <div class="row mt-4">
+              <div class="col-md-2 photo-round d-flex justify-content-start align-items-center">
+                <img src="<%= display_pet_image(answer.user) %>" class="w-100 rounded" style="aspect-ratio: 125/100 !important">
+              </div>
+              <div class="col-md-10 d-flex flex-column justify-content-evenly align-items-start">
+                <span class="fw-bold"><%= answer.user.name %> さん</span>
+                <span><%= answer.created_at.strftime('%Y年%m月%d日') %></span>
+              </div>
+            </div>
+            <p class="card-text mt-4"><%= answer.body %></p>
+            <% if current_user == @question.user && @question.status === "回答受付中" %>
+              <%= link_to 'ベストアンサーにする', question_answer_pick_path(@question, answer), method: :post, class: 'btn bg-light-cyan text-white fw-bold' %>
+            <% end %>
+            <% if current_user %>
+              <div class="d-flex justify-content-end align-items-center">
+              <%= link_to question_answer_unlike_path(@question, answer), method: :delete, id: "answer-unlike-#{answer.id}", class: 'text-light-main fw-bold text-decoration-none', style: "display: #{current_user.likes?(answer) ? 'inline-block' : 'none'}", remote: true do %>
+                <i class="fas fa-thumbs-up"></i> いいね（<%= answer.likes.count %>）
+              <% end %>
+              <%= link_to question_answer_like_path(@question, answer), method: :post, id: "answer-like-#{answer.id}", class: 'text-light-main fw-bold text-decoration-none', style: "display: #{current_user.likes?(answer) ? 'none' : 'inline-block'}", remote: true do %>
+                <i class="fas fa-thumbs-up"></i> いいね（<%= answer.likes.count %>）
+              <% end %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

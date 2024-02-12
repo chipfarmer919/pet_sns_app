@@ -1,0 +1,76 @@
+<div class="container my-5" style="max-width: 767px;">
+  <div>
+    <h2 class="d-flex align-items-center gap-2 fw-bold justify-content-center"><i class="fa fa-paw text-main"></i> ペット</h2>
+    <%= form_with(model: pet) do |form| %>
+      <% if pet.errors.any? %>
+        <div id="error_explanation">
+          <h2><%= pluralize(pet.errors.count, "エラー") %> によりこのペットは保存できませんでした。</h2>
+          <ul>
+            <% pet.errors.each do |error| %>
+              <li><%= error.full_message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+      <div class="mb-3">
+        <div class="px-4 py-2 bg-light-yellow d-flex justify-content-start align-items-center gap-2">
+          <button class="btn btn-sm bg-main text-white fw-bold">必須</button>
+          <span>名前 <small>(全角15文字以内)</small></span>
+        </div>
+        <div class="mt-3 px-4">
+          <%= form.text_field :name, class:"form-control" %>
+        </div>
+      </div>
+      <div class="mb-3">
+        <div class="px-4 py-2 bg-light-yellow d-flex justify-content-start align-items-center gap-2">
+          <button class="btn btn-sm bg-main text-white fw-bold">必須</button>
+          <span>年齢 <small>(全角15文字以内)</small></span>
+        </div>
+        <div class="mt-3 px-4">
+          <%= form.number_field :age, class:"form-control" %>
+        </div>
+      </div>
+      <div class="mb-3">
+        <div class="px-4 py-2 bg-light-yellow d-flex justify-content-start align-items-center gap-2">
+          <button class="btn btn-sm bg-main text-white fw-bold">必須</button>
+          <span>性別 </span>
+        </div>
+        <div class="mt-3 px-4">
+          <%= form.select :gender, ["オス", "メス"], {prompt: "性別"}, class: "form-control"  %>
+        </div>
+      </div>
+      <!-- Category -->
+      <div class="mb-3">
+        <div class="px-4 py-2 bg-light-yellow d-flex justify-content-start align-items-center gap-2">
+          <button class="btn btn-sm bg-main text-white fw-bold">必須</button>
+          <span>カテゴリー </span>
+        </div>
+        <div class="mt-3 px-4">
+          <%= form.collection_select :category_id, Category.all, :id, :name, { prompt: "大分類を選んでください" }, class: "form-control", id: "category-select" %>
+        </div>
+      </div>
+      <!-- Subcategory -->
+      <div class="mb-3">
+        <div class="px-4 py-2 bg-light-yellow d-flex justify-content-start align-items-center gap-2">
+          <button class="btn btn-sm bg-main text-white fw-bold">必須</button>
+          <span>サブカテゴリー </span>
+        </div>
+        <div class="mt-3 px-4">
+          <%= form.collection_select :subcategory_id, (pet.category&.subcategories || []), :id, :name, { prompt: "中分類を選択してください" }, { class: "form-control", id: "subcategory-select", selected: pet.subcategory_id } %>
+        </div>
+      </div>
+      <div class="mb-3">
+        <div class="px-4 py-2 bg-light-yellow d-flex justify-content-start align-items-center gap-2">
+          <button class="btn btn-sm bg-main text-white fw-bold">必須</button>
+          <span>画像 </span>
+        </div>
+        <div class="mt-3 px-4">
+          <%= form.file_field :image %>
+        </div>
+      </div>
+      <div class="actions mt-4 text-center">
+        <%= form.submit "保存する", class:"btn bg-main text-white fw-bold px-4" %>
+      </div>
+    <% end %>
+  </div>
+</div>

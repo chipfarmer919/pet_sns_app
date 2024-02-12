@@ -1,0 +1,32 @@
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-3">
+            <%= render "shared/sidebar", current_page: 'messages' %>
+        </div>
+        <div class="col-lg-9">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2 class="d-flex align-items-center gap-2 fw-bold justify-content-center"><i class="fa fa-paw text-light-main"></i> 友達</h2>
+            </div>
+            <div class="border rounded border-dark mt-4 mb-5">
+                <div class="container p-3 scrollable-div">
+                  <ul class="list-group">
+                    <% current_user.friendships.each do |friendship| %>
+                      <% user = User.with_deleted.find_by(id: friendship.friend_id) %>
+                      <% if user && !user.deleted_at %>
+                        <a href="<%= message_path(user) %>">
+                          <li class="list-group-item">
+                            <%= display_pet_or_username(user) %>
+                          </li>
+                        </a>
+                      <% elsif %>
+                        <li class="list-group-item">
+                          <%= display_pet_or_username(user, user.pets.find_by(profile_display: true)) %>
+                        </li>
+                      <% end %>
+                    <% end %>
+                  </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,28 @@
+<div class="container mt-4" style="max-width: 500px">
+  <!-- Category Show Page -->
+  <h3 class="d-flex align-items-center gap-2 fw-bold mb-4 justify-content-center"><i class="fa fa-paw text-main"></i> <%= @category.name %></h3>
+  <div class="mt-5">
+    <!-- Subcategory Creation Form -->
+    <h5 class="d-flex align-items-center gap-2 fw-bold mb-4"><i class="fa fa-paw text-main"></i> サブカテゴリの追加</h5>
+    <%= form_for [@category, @subcategory] do |f| %>
+      <!-- Subcategory Name -->
+      <div class="mb-3">
+        <%= f.label :name, "サブカテゴリ名", class: "mb-2" %>
+        <%= f.text_field :name, id: "subcategory-name", class: "form-control" %>
+      </div>
+      <!-- Submit Button -->
+      <div class="mt-4 text-center">
+        <%= f.submit "サブカテゴリの作成", class: "btn bg-main text-white fw-bold" %>
+      </div>
+    <% end %>
+    <!-- List of Subcategories -->
+    <div class="mt-5">
+      <h5 class="d-flex align-items-center gap-2 fw-bold mb-4 justify-content-center"><i class="fa fa-paw text-main"></i> サブカテゴリー</h5>
+      <ul>
+        <% @category.subcategories.each do |subcategory| %>
+          <li><%= subcategory.name %></li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+</div>

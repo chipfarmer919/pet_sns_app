@@ -1,0 +1,42 @@
+<div class="container my-5">
+  <div class="justify-content-center">
+    <div class="">
+      <div class="card shadow-sm p-3">
+        <% if @pet.image.attached? %>
+          <div class="text-center" >
+            <img src="<%= url_for(@pet.image) %>" alt="Pet image" class="mobject-fit rounded" style="max-width: 350px; aspect-ratio: 1.25">
+          </div>
+        <% end %>
+        <div class="card-body">
+          <h5 class="mb-3"><%= @pet.name %></h5>
+          <p class="d-flex justify-content-start aling-itmes-center gap-2">
+            <span class="border rounded border-main px-2 py-1 text-main"><strong>年齢:</strong> <%= @pet.age %></span>
+            <span class="border rounded border-main px-2 py-1 text-main"><strong>性別:</strong> <%= @pet.gender %></span>
+            <% if @pet.user && (@pet.user.prefecture.present? || @pet.user.city.present?) %>
+              <span class="border rounded border-main px-2 py-1 text-main"><strong>場所:</strong>
+                <%= [@pet.user.prefecture, @pet.user.city].compact.join %>
+              </span>
+            <% end %>
+          </p>
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex justify-content-start align-items-center gap-2">
+              <strong>オーナー:</strong>
+              <% if @pet.user %>
+                <%= link_to @pet.user.name, user_path(@pet.user), class: "text-decoration-none" %>
+              <% else %>
+                退会したユーザー
+              <% end %>
+            </div>
+            <div class="d-flex justify-content-end align-items-center gap-2">
+              <% if current_user == pet_owner(@pet) %>
+                <%= link_to '編集', edit_pet_path(@pet), class:"btn bg-main text-white fw-bold" %>
+                <%= link_to '削除', @pet, method: :delete, data: { confirm: 'Are you sure?' }, class:"btn btn-secondary" %>
+              <% end %>
+              <%= link_to '戻る', :back, class:"btn bg-light-cyan text-white fw-bold" %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

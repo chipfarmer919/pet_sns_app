@@ -1,0 +1,66 @@
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-12 col-lg-3">
+      <%= render "shared/sidebar", current_page: 'visits'%>
+    </div>
+    <div class="col-12 col-lg-9">
+      <div class="visits">
+        <h3 class="d-flex align-items-center gap-2 fw-bold"><i class="fa fa-paw text-light-main"></i> 訪問ログ</h3>
+        <div class="mt-4">
+          <ul class="tabs-nav mtabs">
+            <li class="px-3 py-1 fw-bold text-main tab-active"><a href="#visited">足あと</a></li>
+            <li class="px-3 py-1 fw-bold text-main"><a href="#visits">自分の足あと</a></li>
+          </ul>
+          <div class="tabs-stage border rounded border-dark mt-4 mb-5">
+            <div id="visited" class="tabs-stage-element">
+              <div class="p-3 bg-white rounded-t border-bottom border-dark">
+                総アクセス数：<%= @visited.count %>
+              </div>
+              <div class="scrollable-div">
+                  <% @visited.order(created_at: :desc).each do |visit| %>
+                    <% visitor = User.with_deleted.find(visit.visitor_id) %>
+                    <div class="d-flex justify-content-between align-items-center bg-light-grey p-3 border-bottom border-dark">
+                      <span>
+                      <%= image_tag display_pet_image(visitor), class: 'small-profile-image-rect' %>
+                      <%= link_to display_pet_or_username(visitor), visit_read_path(visit), class: "text-black" %>
+                      </span>
+                      <span>
+                      <%= visit.created_at.strftime('%m月%d日 %H:%M') %>
+                      </span>
+                    </div>
+                  <% end %>
+                </table>
+              </div>
+              <div class="p-3 bg-white rounded-b border-top border-dark">
+                &nbsp;
+              </div>
+            </div>
+            <div id="visits" class="tabs-stage-element">
+              <div class="p-3 bg-white rounded-t border-bottom border-dark">
+                総アクセス数：<%= @visits.count %>
+              </div>
+              <div class="scrollable-div">
+                  <% @visits.order(created_at: :desc).each do |visit| %>
+                    <% visitor = User.with_deleted.find(visit.visitor_id) %>
+                    <div class="d-flex justify-content-between align-items-center bg-light-grey p-3 border-bottom border-dark">
+                      <span>
+                      <%= image_tag display_pet_image(visitor), class: 'small-profile-image-rect' %>
+                      <%= link_to display_pet_or_username(visitor), "", class: "text-black" %>
+                      </span>
+                      <span>
+                      <%= visit.created_at.strftime('%m月%d日 %H:%M') %>
+                      </span>
+                    </div>
+                  <% end %>
+                </table>
+              </div>
+              <div class="p-3 bg-white rounded-b border-top border-dark">
+                &nbsp;
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

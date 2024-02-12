@@ -1,0 +1,112 @@
+<div class="container my-5 " style="max-width: 767px;">
+  <h3 class="d-flex align-items-center gap-2 fw-bold justify-content-center mb-4"><i class="fa fa-paw text-light-main"></i> ユーザー情報&Aをカテゴリから探す</h3>
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
+    <%= render "users/shared/error_messages", resource: resource %>
+    <div class="mb-3">
+      <div class="px-4 py-2 bg-light-yellow d-flex justify-content-start align-items-center gap-2">
+        <span class="btn btn-sm bg-main text-white">必須</span>
+        <span>名前 <small>(全角15文字以内)</small></span>
+      </div>
+      <div class="mt-3 px-4">
+        <%= f.text_field :name, autofocus: true, autocomplete: "name", class:"form-control" %>
+      </div>
+    </div>
+    <div class="mb-3">
+      <div class="px-4 py-2 bg-light-yellow d-flex justify-content-start align-items-center gap-2">
+        <span class="btn btn-sm bg-main text-white">必須</span>
+        <span>メールアドレス</span>
+      </div>
+      <div class="mt-3 px-4">
+        <%= f.email_field :email, autofocus: true, autocomplete: "email", class:"form-control" %>
+      </div>
+    </div>
+    <div class="mb-3">
+      <div class="px-4 py-2 bg-light-yellow d-flex justify-content-start align-items-center gap-2">
+        <span class="btn btn-sm bg-main text-white">必須</span>
+        <span>年齢</span>
+      </div>
+      <div class="mt-3 px-4">
+        <%= f.number_field :age, autofocus: true, autocomplete: "age", class:"form-control" %>
+      </div>
+    </div>
+    <div class="mb-3">
+      <div class="px-4 py-2 bg-light-yellow d-flex justify-content-start align-items-center gap-2">
+        <span class="btn btn-sm bg-main text-white">必須</span>
+        <span>ニックネーム</span>
+      </div>
+      <div class="mt-3 px-4">
+        <%= f.text_field :username, autofocus: true, autocomplete: "username", class: "form-control" %>
+      </div>
+    </div>
+    <div class="mb-3">
+      <div class="px-4 py-2 bg-light-yellow d-flex justify-content-start align-items-center gap-2">
+        <span class="btn btn-sm bg-main text-white">必須</span>
+        <span>都道府県</span>
+      </div>
+      <div class="mt-3 px-4">
+        <%= f.select :prefecture, options_for_select(prefectures_with_cities.keys, current_user.prefecture), { prompt: "都道府県を選択" }, id: 'prefecture-select', class: 'form-control' %>
+      </div>
+    </div>
+    <div class="mb-3">
+      <div class="px-4 py-2 bg-light-yellow d-flex justify-content-start align-items-center gap-2">
+        <span class="btn btn-sm bg-main text-white">必須</span>
+        <span>市町村</span>
+      </div>
+      <div class="mt-3 px-4">
+        <%= hidden_field_tag(:hid_city, current_user.city) %>
+        <%= f.select :city, options_for_select([]), { prompt: "市町村を選択" }, id: 'city-select', class: 'form-control' %>
+      </div>
+    </div>
+    <div class="mb-3">
+      <div class="px-4 py-2 bg-light-yellow d-flex justify-content-start align-items-center gap-2">
+        <span class="btn btn-sm bg-main text-white">必須</span>
+        <span>ペットを飼っているもしくは飼おうとしている</span>
+      </div>
+      <div class="mt-3 px-4">
+        <div class="field mb-3">
+          <%= f.check_box :own_pet %>
+          <%= f.label :ペットを飼っているもしくは飼おうとしている, class: "form-label" %>
+        </div>
+      </div>
+    </div>
+    <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
+      <div>Currently waiting confirmation for: <%= resource.unconfirmed_email %></div>
+    <% end %>
+    <div class="mb-3">
+      <div class="px-4 py-2 bg-light-yellow d-flex justify-content-start align-items-center gap-2">
+        <span class="btn btn-sm bg-main text-white">必須</span>
+        <span>パスワード</span>
+      </div>
+      <div class="mt-3 px-4">
+        <%= f.password_field :password, autocomplete: "new-password", class:"form-control" %>
+        <% if @minimum_password_length %>
+          <br />
+          <em><%= @minimum_password_length %> 文字以上入力してください。</em>
+        <% end %>
+      </div>
+    </div>
+    <div class="mb-3">
+      <div class="px-4 py-2 bg-light-yellow d-flex justify-content-start align-items-center gap-2">
+        <span class="btn btn-sm bg-main text-white">必須</span>
+        <span>パスワード確認</span>
+      </div>
+      <div class="mt-3 px-4">
+        <%= f.password_field :password_confirmation, autocomplete: "new-password", class:"form-control" %>
+      </div>
+    </div>
+    <div class="mb-3">
+      <div class="px-4 py-2 bg-light-yellow d-flex justify-content-start align-items-center gap-2">
+        <span class="btn btn-sm bg-main text-white">必須</span>
+        <span>現在のパスワード</span>
+      </div>
+      <div class="mt-3 px-4">
+        <%= f.password_field :current_password, autocomplete: "current-password", class:"form-control" %>
+      </div>
+    </div>
+    <div class="actions text-center mt-4">
+      <%= f.submit "更新する", class:"btn bg-main text-white fw-bold px-4" %>
+    </div>
+  <% end %>
+  <h3 class="d-flex align-items-center mt-4 gap-2 fw-bold justify-content-center"><i class="fa fa-paw text-light-main"></i> 退会処理</h3>
+  <div class="d-flex justify-content-between aling-items-center gap-2"><%= button_to "退会する", registration_path(resource_name), data: { confirm: "本当に退会しますか？", turbo_confirm: "本当に退会しますか？" }, method: :delete, class:"btn btn-secondary" %><%= link_to "戻る", :back, class: "btn border-main text-main fw-bold" %> </div>
+</div>

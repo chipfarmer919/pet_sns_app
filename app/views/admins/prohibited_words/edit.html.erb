@@ -1,0 +1,11 @@
+<div class="container mt-4" style="max-width: 500px">
+  <h3 class="d-flex align-items-center gap-2 fw-bold"><i class="fa fa-paw text-main"></i> 禁止ワードを編集する</h3>
+  <div class="mt-4">
+    <%= form_with(model: @prohibited_word, url: prohibited_word_path(@prohibited_word), method: :patch) do |form| %>
+      <%= form.text_field :word, class: "form-control" %>
+      <div class="text-center mt-4">
+        <%= form.submit '更新する', class: "btn bg-main text-white fw-bold px-5" %>
+      </div>
+    <% end %>
+  </div>
+</div>

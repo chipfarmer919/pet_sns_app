@@ -1,0 +1,159 @@
+<div class="container my-5" style="max-width: 767px">
+  <div class="col-12 col-lg-12 questions">
+    <h3 class="d-flex align-items-center gap-2 fw-bold justify-content-center"><i class="fa fa-paw text-light-main"></i> ペットのお悩みQ&Aをカテゴリから探す</h3>
+    <%= form_tag questions_path, method: :get, class:"mt-5" do %>
+      <div class="bg-light-yellow px-4 py-5 rounded">
+        <h4 class="d-flex align-items-center gap-2 fw-bold">
+          <i class="fa fa-search text-main"></i> Q&Aを検索する
+        </h4>
+        <div class="mt-4">
+          <div class="mb-4">
+            <label class="text-main mb-2">フリーワード検索 (500文字以内)</label>
+            <div class="input-group">
+              <%= text_field_tag :keyword, params[:keyword], placeholder: "例: ヨークシャーテリア", class: "form-control border border-dark" %>
+              <div class="input-group-btn fw-bold">
+                <button class="btn bg-light-main fw-bold text-white border-dark" style="border-left-color: transparent; border-top-left-radius: 0; border-bottom-left-radius: 0;" type="submit">
+                  <i class="fa fa-search"></i> 検索
+                </button>
+              </div>
+            </div>
+          </div>
+          <label for="subcategory-select2" class="mb-2 text-main">大分類</label>
+          <div class="d-flex justify-content-between gap-2">
+            <div class="flex-fill bg-main rounded">
+              <%= radio_button_tag(:category, 1, params[:category] == 'dog', class: "btn-check", id: "btn-check1", autocomplete: "off") %>
+              <label class="btn bg-light-main text-white d-flex flex-column align-items-center gap-1 <%= 'active' if params[:category] == 'dog' %>" for="btn-check1">
+                <i class="fas fa-dog fa-3x"></i>
+                犬のこと
+              </label>
+            </div>
+            <div class="flex-fill bg-main rounded">
+              <%= radio_button_tag(:category, 2, params[:category] == 'cat', class: "btn-check", id: "btn-check2", autocomplete: "off") %>
+              <label class="btn bg-light-main text-white d-flex flex-column align-items-center gap-1 <%= 'active' if params[:category] == 'cat' %>" for="btn-check2">
+                <i class="fas fa-cat fa-3x"></i>
+                猫のこと
+              </label>
+            </div>
+            <div class="flex-fill bg-main rounded">
+              <%= radio_button_tag(:category, 3, params[:category] == 'other', class: "btn-check", id: "btn-check3", autocomplete: "off") %>
+              <label class="btn bg-light-main text-white d-flex flex-column align-items-center gap-1 <%= 'active' if params[:category] == 'other' %>" for="btn-check3">
+                <i class="fas fa-paw fa-3x"></i>
+                その他のペットのこと
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="d-flex justify-content-between align-items-center gap-2 py-3 border-bottom-dashed-main ">
+          <div class="mb-3 flex-fill flex-shrink-0 w-50">
+            <label for="subcategory-select2" class="mb-2 text-main">中分類</label>
+            <div class="">
+              <%= select_tag :subcategory, options_for_select([], params[:subcategory]), include_blank: true, class: "form-select", style: "display: inline-block;", id: "subcategory-select2", prompt: "犬・猫を選択してください。" %>
+            </div>
+          </div>
+          <div class="mb-3 flex-fill flex-shrink-0 w-50">
+            <label class="mb-2 text-main">小分類</label>
+            <div class="">
+              <%= select_tag :status, options_for_select(["解決済", "回答受付中"], params[:status]), class: "form-select", style: "display: inline-block;", prompt: "ステータス" %>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-4 mb-4">
+          <div class="col-2">
+            <%= radio_button_tag(:special_category, "病気・ケガ", params[:special_category] == '病気・ケガ', class: "btn-check", id: "btn-check4", autocomplete: "off") %>
+            <label class="btn bg-white border border-2 border-light-main w-100 h-100 d-flex flex-column justify-content-center align-items-center gap-2  <%= 'active' if params[:special_category] == '病気・ケガ' %>" for="btn-check4">
+              <i class="fa fa-syringe text-light-main"></i> 
+              <small class="fw-bold">病気・ケガ</small>
+            </label>
+          </div>
+          <div class="col-2">
+            <%= radio_button_tag(:special_category, "食事", params[:special_category] == '食事', class: "btn-check", id: "btn-check5", autocomplete: "off") %>
+            <label class="btn bg-white border border-2 border-light-main w-100 h-100 d-flex flex-column justify-content-center align-items-center gap-2  <%= 'active' if params[:speicial_category] == '食事' %>" for="btn-check5">
+              <i class="fas fa-ring text-light-main"></i>
+              <small class="fw-bold">食事</small>
+            </label>
+          </div>
+          <div class="col-2">
+            <%= radio_button_tag(:special_category, "飼い方・しつけ", params[:special_category] == '飼い方・しつけ', class: "btn-check", id: "btn-check6", autocomplete: "off") %>
+            <label class="btn bg-white border border-2 border-light-main w-100 h-100 d-flex flex-column justify-content-center align-items-center gap-2  <%= 'active' if params[:special_category] == '飼い方・しつけ' %>" for="btn-check6">
+              <i class="fa fa-syringe text-light-main"></i>
+              <small class="fw-bold text-truncate">飼い方・しつけ</small>
+            </label>
+          </div>
+          <div class="col-2">
+            <%= radio_button_tag(:special_category, "お出かけ・遊び", params[:special_category] == 'お出かけ・遊び', class: "btn-check", id: "btn-check7", autocomplete: "off") %>
+            <label class="btn bg-white border border-2 border-light-main w-100 h-100 d-flex flex-column justify-content-center align-items-center gap-2  <%= 'active' if params[:special_category] == 'お出かけ・遊び' %>" for="btn-check7">
+              <i class="fa fa-sun text-light-main"></i>
+              <small class="fw-bold text-truncate">お出かけ・遊び</small>
+            </label>
+          </div>
+          <div class="col-2">
+            <%= radio_button_tag(:special_category, "長生き・介護", params[:special_category] == '長生き・介護', class: "btn-check", id: "btn-check8", autocomplete: "off") %>
+            <label class="btn bg-white border border-2 border-light-main w-100 h-100 d-flex flex-column justify-content-center align-items-center gap-2  <%= 'active' if params[:special_category] == '長生き・介護' %>" for="btn-check8">
+              <i class="fas fa-heartbeat text-light-main"></i>
+              <small class="fw-bold text-truncate">長生き・介護</small>
+            </label>
+          </div>
+          <div class="col-2">
+            <%= radio_button_tag(:special_category, "その他", params[:special_category] == 'その他', class: "btn-check", id: "btn-check9", autocomplete: "off") %>
+            <label class="btn bg-white border border-2 border-light-main w-100 h-100 d-flex flex-column justify-content-center align-items-center gap-2  <%= 'active' if params[:special_category] == 'その他' %>" for="btn-check9">
+              <i class="fa fa-comment-dots text-light-main"></i>
+              <small class="fw-bold text-truncate">その他</small>
+            </label>
+          </div>
+        </div>
+      </div>
+    <% end %>
+    <div class="mt-5">
+      <h4 class="d-flex align-items-center justify-content-center gap-2 fw-bold">
+        <i class="fa fa-search text-light-main"></i> 新着のQ&A
+      </h4>
+      <div class="mb-3">
+        <% @questions.order(created_at: :desc).each do |question| %>
+          <div class="mb-4 px-3 pb-4 border-bottom-dashed-grey">
+            <div class="col-md-4 d-none">
+              <img src="<%= display_pet_image(question.user) %>" class="img-fluid rounded-start" alt="...">
+            </div>
+            <div class="">
+              <div class="card-body">
+                <div class="d-flex gap-2 mb-4">
+                  <span class="border border-light-main round px-2 py-1 rounded text-light-main text-sm"><%= question.category.name %></span>
+                  <span class="border border-light-main round px-2 py-1 rounded text-light-main text-sm"><%= question.subcategory.name %></span>
+                  <span class="border border-light-main round px-2 py-1 rounded text-light-main text-sm"><%= question.special_category %></span>
+                </div>
+                <% user = User.with_deleted.find_by(id: question.user_id) %>
+                <% if user && !user.deleted_at && user.pets.first %>
+                  <h5 class="card-text d-none"><%= display_pet_or_username(user) %></h5>
+                <% end %>
+                <p class="card-text d-none"><small class="text-body-secondary">質問日:<%= question.created_at.strftime('%Y-%m-%d') %></small></p>
+                <div class="d-flex align-items-center gap-2">
+                  <span class="d-flex fw-bold text-white bg-light-cyan justify-content-center align-items-center rounded" style="width: 35px; height: 35px">
+                    Q
+                  </span>
+                  <label class="fw-bold text-light-cyan"><%= link_to truncate(question.body, length: 90), question_path(question), class: 'text-dark text-decoration-none' %></label>
+                </div>
+                <div class="row my-3 d-none">
+                  <div class="col-12 col-md-6">
+                    <span class="card-text">回答数: <%= question.answers.count %></span>
+                    <span class="card-text">ステータス: <%= question.status %></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+        <div class="pagination">
+          <%= will_paginate @questions %>
+        </div>
+      </div>
+      
+      <div class="d-flex justify-content-center align-items-center text-large">
+        <i class="fas fa-slash fa-lg text-light-main"></i><span>こんなときどうするの？</span><i class="fas fa-slash fa-lg fa-flip-horizontal text-light-main"></i>
+      </div>
+      <div class="col-12 bg-light-yellow p-5 d-flex flex-column justify-content-center align-items-center mt-2">
+        <span class="text-xlarge text-main fw-bold">Q&A</span>
+        <span class="text-xlarge text-main fw-bold">質問を投稿する</span>
+        <%= link_to "質問投稿ページへ", new_question_path, class: "btn bg-light-main text-white text-large p-3 px-5 mt-2" %>
+      </div>
+    </div>
+  </div>
+</div>

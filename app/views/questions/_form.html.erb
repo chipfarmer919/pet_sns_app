@@ -1,0 +1,48 @@
+<div class="container my-5" style="max-width: 767px">
+  <h3 class="d-flex align-items-center gap-2 fw-bold justify-content-center"><i class="fa fa-paw text-light-main"></i> 質問を作成する</h3>
+  <div class="mt-5">
+    <h5 class="d-flex align-items-center gap-2 fw-bold  mb-5"><i class="fa fa-paw text-light-main"></i> 質問作成 <button class="btn btn-sm bg-main text-white">必須</button></h5>
+    <%= form_with(model: question)  do |form|  %>
+      <% if question.errors.any? %>
+        <div id="error_explanation">
+          <h2><%= pluralize(question.errors.count, "error") %> prohibited this question from being saved:</h2>
+          <ul>
+            <% question.errors.each do |error| %>
+              <li><%= error.full_message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+      <div class="px-3 py-5 mb-5 bg-light-grey bg-transparent rounded">
+        <div class="row mb-3">
+          <%= form.label :subcategory_id, "大分類", class: 'col-3' %>
+          <div class="col-9">
+            <%= form.collection_select :category_id, Category.all, :id, :name, { prompt: "大分類を選んでください" }, class: "form-control", id: "category-select" %>
+          </div>
+        </div>
+        <!-- Subcategory -->
+        <div class="row mb-3">
+          <%= form.label :subcategory_id, "中分類", class: 'col-3' %>
+          <div class="col-9">
+            <%= form.collection_select :subcategory_id, (question.category&.subcategories || []), :id, :name, { prompt: "中分類を選んでください" }, class: "form-control", id: "subcategory-select" %>
+          </div>
+        </div>
+        <div class="row">
+          <%= form.label :special_category, "小分類", class: 'col-3' %>
+          <div class="col-9">
+            <%= form.select :special_category, [ "病気・ケガ", "食事", "飼い方・しつけ", "お出かけ・遊び", "長生き・介護", "その他"], {prompt: '小分類を選んでください'}, class: "form-control" %>
+          </div>
+        </div>
+      </div>
+      <div class="mb-3">
+        <h5 class="d-flex align-items-center gap-2 fw-bold mb-3"><i class="fa fa-paw text-light-main"></i> どのようなお困りごとですか？（50文字以上） <button class="btn btn-sm bg-main text-white">必須</button></h5>
+        <div class="mt-2">
+          <%= form.text_area :body, rows: "5", class:"form-control col-9" %>
+        </div>
+      </div>
+      <div class="actions text-center mt-5">
+        <%= form.submit "入力内容を作成する", class:"btn bg-light-main text-white px-4 fw-bold" %>
+      </div>
+    <% end %>
+  </div>
+</div>
